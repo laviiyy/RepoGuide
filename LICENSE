@@ -1,0 +1,31 @@
+Copyright © 2026 Sparsh Dehran. All rights reserved.
+
+RepoGuide — the application in this repository, its source code, its user interface and visual
+design, its documentation and copy, and the screenshots in `docs/` — is the original work of
+Sparsh Dehran and is protected by copyright.
+
+This repository is published for viewing and evaluation only. No permission is granted to use,
+copy, modify, merge, publish, distribute, sublicense or sell this work, in whole or in part,
+without the prior written permission of the copyright holder.
+
+You may:
+
+  - view the source code, documentation and screenshots in this repository;
+  - clone the repository and run the project locally in order to evaluate it;
+  - cite or reference the project when reviewing it in an academic or professional context,
+    provided the author is credited.
+
+You may not:
+
+  - copy or reuse the code, the interface design, the documentation or the screenshots in
+    another project, product, repository or submission;
+  - redistribute this work, or any modified version of it, in any form;
+  - present this work, in whole or in part, as your own.
+
+This file is a notice of copyright and terms of use. It is not an open-source licence, and no
+rights are granted by implication, estoppel or otherwise.
+
+Third-party dependencies remain under their own licences and are not covered by this notice; see
+`frontend/package.json` and each dependency's own licence.
+
+Permission requests: https://github.com/laviiyy

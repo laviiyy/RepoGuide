@@ -1,0 +1,416 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  RepoGuide theme — one accent (#F2704A ember), hairline borders, flat panes.
+  Light and dark are driven by CSS variables so every Tailwind color utility
+  (bg-canvas, text-muted, border-border, ...) follows the active theme.
+  Dark is canonical; light is a token swap only (see .stitch/prompts).
+*/
+:root {
+  color-scheme: light;
+
+  --canvas: #ffffff;
+  --surface: #f6f7f8;
+  --surface-2: #ffffff; /* surface-raised: cards, composer, terminal body */
+  --surface-3: #eef0f2; /* surface-hover: hover / active rows */
+
+  --border: #dde1e6;
+  --border-strong: #c6cbd1;
+
+  --fg: #1f2328;
+  --fg-muted: #656d76;
+  --fg-faint: #8c959f;
+
+  --accent: #c2410c;
+  --accent-hover: #a33409;
+  --accent-fg: #ffffff;
+  --accent-soft: rgba(194, 65, 12, 0.1);
+  --accent-border: rgba(194, 65, 12, 0.3);
+
+  --success: #1a7f37;
+  --success-soft: rgba(26, 127, 55, 0.1);
+  --danger: #cf222e;
+  --danger-soft: rgba(207, 34, 46, 0.09);
+  --warn: #9a6700;
+
+  /* Terminals stay dark in light mode — intentional. */
+  --terminal: #0a0c0f;
+  --terminal-fg: #e6e8eb;
+
+  /* Background layers — light mode inverts the glow alphas to dark tints. */
+  --layer-dot: rgba(31, 35, 40, 0.05);
+  --layer-rule: rgba(31, 35, 40, 0.04);
+  --layer-glow-a: rgba(194, 65, 12, 0.06);
+  --layer-glow-b: rgba(31, 35, 40, 0.03);
+  --layer-vignette: rgba(31, 35, 40, 0.12);
+}
+
+.dark {
+  color-scheme: dark;
+
+  --canvas: #0a0c0f;
+  --surface: #101317;
+  --surface-2: #161a1f;
+  --surface-3: #1c2127;
+
+  --border: #23282f;
+  --border-strong: #313842;
+
+  --fg: #e6e8eb;
+  --fg-muted: #8b939c;
+  --fg-faint: #5b636d;
+
+  --accent: #f2704a;
+  --accent-hover: #ff8663;
+  --accent-fg: #0a0c0f;
+  --accent-soft: rgba(242, 112, 74, 0.12);
+  --accent-border: rgba(242, 112, 74, 0.3);
+
+  --success: #3fb950;
+  --success-soft: rgba(63, 185, 80, 0.12);
+  --danger: #f85149;
+  --danger-soft: rgba(248, 81, 73, 0.12);
+  --warn: #d29922;
+
+  --terminal: #07090c;
+  --terminal-fg: #e6e8eb;
+
+  --layer-dot: rgba(230, 232, 235, 0.05);
+  --layer-rule: rgba(255, 255, 255, 0.03);
+  --layer-glow-a: rgba(242, 112, 74, 0.1);
+  --layer-glow-b: rgba(255, 255, 255, 0.04);
+  --layer-vignette: rgba(10, 12, 15, 0.85);
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-faint: var(--fg-faint);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-border: var(--accent-border);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-warn: var(--warn);
+
+  --color-terminal: var(--terminal);
+  --color-terminal-fg: var(--terminal-fg);
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+  }
+
+  ::selection {
+    background-color: var(--accent-soft);
+    color: var(--fg);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--fg-faint);
+    background-clip: content-box;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+/* Minimal markdown styles for assistant explanations. */
+.md > * + * {
+  margin-top: 0.75em;
+}
+.md p,
+.md li {
+  color: var(--fg-muted);
+  line-height: 1.65;
+}
+.md h1,
+.md h2,
+.md h3 {
+  color: var(--fg);
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+}
+.md ul,
+.md ol {
+  padding-left: 1.15rem;
+}
+.md ul {
+  list-style: disc;
+}
+.md ol {
+  list-style: decimal;
+}
+.md li + li {
+  margin-top: 0.25em;
+}
+.md a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.md a:hover {
+  text-decoration: underline;
+}
+.md code {
+  font-family: var(--font-mono);
+  font-size: 0.8125em;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.1em 0.35em;
+}
+.md pre {
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.875rem;
+  overflow-x: auto;
+}
+.md pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 0.8125rem;
+}
+.md hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+.md table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+.md th,
+.md td {
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.6rem;
+  text-align: left;
+}
+
+@keyframes rg-blink {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+.rg-dot {
+  animation: rg-blink 1.2s infinite ease-in-out;
+}
+
+@keyframes rg-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rg-in {
+  animation: rg-in 0.18s ease-out both;
+}
+
+/* fade-rise(12px, 300ms) — the default entrance. `--rg-delay` drives stagger. */
+@keyframes rg-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rg-rise {
+  animation: rg-rise 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--rg-delay, 0ms);
+}
+
+/* 2px blinking stream cursor after the last line of output. */
+@keyframes rg-caret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.rg-caret {
+  animation: rg-caret 1s step-end infinite;
+}
+
+/* ---------------------------------------------------------------------------
+   4-layer scroll-reactive background (landing + docs routes only).
+   Each layer is its own element carrying `data-depth`; the parallax hook writes
+   `--rg-y` (scroll px) on the container and the layer's `--rg-offset` is
+   computed per layer in JS (tiled layers use modulo so the pattern never ends).
+--------------------------------------------------------------------------- */
+.rg-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.rg-layer {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity;
+}
+
+.rg-dots {
+  inset: -32px 0;
+  background-image: radial-gradient(var(--layer-dot) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.rg-glow::after {
+  content: "";
+  position: absolute;
+  right: 4%;
+  bottom: -12%;
+  width: 720px;
+  height: 640px;
+  border-radius: 9999px;
+  filter: blur(120px);
+  background: radial-gradient(
+    circle,
+    var(--layer-glow-b) 0%,
+    transparent 72%
+  );
+}
+
+.rg-glow::before {
+  content: "";
+  position: absolute;
+  top: -180px;
+  left: -140px;
+  width: 900px;
+  height: 780px;
+  border-radius: 9999px;
+  filter: blur(140px);
+  background: radial-gradient(
+    circle,
+    var(--layer-glow-a) 0%,
+    transparent 70%
+  );
+}
+
+.rg-rules {
+  inset: -96px 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--layer-rule) 0px,
+    var(--layer-rule) 1px,
+    transparent 1px,
+    transparent 96px
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 12%,
+    black 88%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 12%,
+    black 88%,
+    transparent 100%
+  );
+}
+
+.rg-vignette {
+  background: radial-gradient(
+    circle at center,
+    transparent 58%,
+    var(--layer-vignette) 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rg-dot,
+  .rg-in,
+  .rg-rise,
+  .rg-caret {
+    animation: none;
+  }
+
+  /* Layers hold still; the page reads as a flat, quiet surface. */
+  .rg-layer {
+    transform: none !important;
+  }
+}

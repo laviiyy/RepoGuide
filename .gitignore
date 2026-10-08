@@ -1,0 +1,71 @@
+# ---------------------------------------------------------------------------
+# Local design + tooling artefacts — not part of the repository.
+#
+# .stitch/ holds the Stitch design brief, the exported screen frames AND may
+# hold credentials (a Stitch API key, a gcloud credential), so the whole folder
+# is ignored whatever the files inside are called. .opencode/ holds local
+# planning notes.
+# ---------------------------------------------------------------------------
+.stitch/
+.opencode/
+.freebuff/
+
+# Repo-wide env files (matches at any depth)
+.env
+.env.*
+!.env.example
+
+# Credential-shaped filenames anywhere in the tree
+*.pem
+*.p12
+service-account*.json
+
+
+# ---------------------------------------------------------------------------
+# Node / frontend
+# ---------------------------------------------------------------------------
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+
+# ---------------------------------------------------------------------------
+# Python / backend (per the RepoGuide plan: FastAPI + sandbox modules)
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# ---------------------------------------------------------------------------
+# Runtime artifacts — sandbox clones, session logs, cached repo analysis.
+# These are large, machine-specific and reproducible. Never commit them.
+# ---------------------------------------------------------------------------
+logs/
+*.log
+workspace/
+sandboxes/
+
+# ---------------------------------------------------------------------------
+# Coverage / test output
+# ---------------------------------------------------------------------------
+coverage/
+htmlcov/
+
+# ---------------------------------------------------------------------------
+# OS and editor
+# ---------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# ---------------------------------------------------------------------------
+# Freebuff client metadata (local to this machine, not part of the project)
+# ---------------------------------------------------------------------------
+.freebuff/

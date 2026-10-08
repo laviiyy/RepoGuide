@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>RepoGuide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      // Apply the stored theme before paint so there is no flash of the wrong palette.
+      (function () {
+        try {
+          var choice = localStorage.getItem("repoguide.theme") || "system";
+          var dark =
+            choice === "dark" ||
+            (choice === "system" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          if (dark) document.documentElement.classList.add("dark");
+        } catch (error) {
+          /* localStorage unavailable — fall back to light */
+        }
+      })();
+    </script>
+    <style>
+      /*
+        Boot screen — inline so it paints before the bundle, fonts and React tree
+        arrive. It is not a branded experience: it hides the blank first paint and
+        is dismissed by main.tsx on the first painted frame (or, at the latest, by
+        its own 4s safety net).
+      */
+      #rg-boot {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #0a0c0f;
+        color: #e6e8eb;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+          sans-serif;
+      }
+      html:not(.dark) #rg-boot {
+        background: #ffffff;
+        color: #1f2328;
+      }
+      #rg-boot .rg-boot-mark {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border: 1px solid #23282f;
+        border-radius: 6px;
+        color: #f2704a;
+      }
+      html:not(.dark) #rg-boot .rg-boot-mark {
+        border-color: #dde1e6;
+      }
+      #rg-boot .rg-boot-word {
+        margin: 14px 0 24px;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      #rg-boot .rg-boot-track {
+        width: 220px;
+        height: 2px;
+        border-radius: 9999px;
+        overflow: hidden;
+        background: #23282f;
+      }
+      html:not(.dark) #rg-boot .rg-boot-track {
+        background: #dde1e6;
+      }
+      #rg-boot .rg-boot-bar {
+        display: block;
+        width: 0;
+        height: 100%;
+        border-radius: 9999px;
+        background: #f2704a;
+        transition: width 420ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      #rg-boot .rg-boot-label {
+        margin: 40px 0 0;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+        font-size: 11px;
+        color: #5b636d;
+      }
+      #rg-boot.rg-boot-out {
+        opacity: 0;
+        transform: translateY(-12px);
+        transition:
+          opacity 240ms ease-out,
+          transform 240ms ease-out;
+      }
+      html:not(.dark) #rg-boot .rg-boot-label {
+        color: #8c959f;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #rg-boot .rg-boot-bar {
+          transition: none;
+        }
+        #rg-boot.rg-boot-out {
+          transform: none;
+          transition: opacity 80ms linear;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <div id="rg-boot" role="status">
+      <span class="rg-boot-mark" aria-hidden="true">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="6 4 10 8 6 12"></polyline>
+        </svg>
+      </span>
+      <p class="rg-boot-word">RepoGuide</p>
+      <div class="rg-boot-track" aria-hidden="true">
+        <span class="rg-boot-bar" id="rg-boot-bar"></span>
+      </div>
+      <p class="rg-boot-label">preparing workspace</p>
+    </div>
+
+    <script>
+      (function () {
+        var boot = document.getElementById("rg-boot");
+        var bar = document.getElementById("rg-boot-bar");
+        if (!boot) return;
+
+        var started = performance.now();
+        var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var done = false;
+
+        function hide() {
+          if (done) return;
+          done = true;
+          if (bar) bar.style.width = "100%";
+          var elapsed = performance.now() - started;
+          // reduced-motion: no bar animation, and the screen is gone inside 120ms.
+          var wait = reduced ? Math.max(0, 100 - elapsed) : 0;
+          window.setTimeout(function () {
+            boot.classList.add("rg-boot-out");
+            if (reduced) boot.remove();
+            else window.setTimeout(function () { boot.remove(); }, 280);
+          }, wait);
+        }
+
+        // main.tsx calls this once React has painted; the timeout is a safety net
+        // so a bundle error can never leave the page stuck behind the boot screen.
+        window.__rgBootDone = hide;
+        window.setTimeout(hide, 4000);
+
+        if (!reduced && bar) {
+          var frame = window.requestAnimationFrame || function (fn) { fn(); };
+          frame(function () { bar.style.width = "62%"; });
+          window.setTimeout(function () { bar.style.width = "88%"; }, 260);
+        }
+      })();
+    </script>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

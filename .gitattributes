@@ -1,0 +1,10 @@
+# Keep line endings normalised in the repository and native on checkout, so the
+# project behaves the same on Windows, macOS and Linux.
+* text=auto
+
+# Binary assets — never touch these.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
